@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Geoportál Holičky – zaniklá obec ve VVP Ralsko</title>
+    <meta name="description" content="Naučný geoportál pro zaniklou obec Holičky ve Vojenském prostoru Ralsko. Historie, mapová data, rozhovory a 3D rekonstrukce pro veřejnost.">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+    <header>
+        <div class="topbar">
+            <span class="brand">Geoportál Holičky</span>
+            <nav>
+                <a href="#mapa">Mapa</a>
+                <a href="#historie">Historie a dokumentace</a>
+                <a href="#oprojektu">O projektu</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="uvod">
+        <div class="hero-content">
+            <h1>Holičky. Hledání ztracené obce.</h1>
+            <p>Digitální rekonstrukce obce Holičky, zaniklé ve VVP Ralsko po roce 1947, pomocí moderních geoinformačních technologií.</p>
+            <div class="hero-actions">
+                <a class="button primary" href="#mapa">Prozkoumat Geoportál</a>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <section class="section" id="o-projektu">
+            <div class="container">
+                <h2>Co geoportál nabízí</h2>
+                <p class="lead">Cílem je vytvořit přehledné místo, kde návštěvníci rychle pochopí souvislosti zániku obce, seznámí se s dokumentací a mohou nahlédnout do multimediálního archivu.</p>
+                <div class="cards-grid">
+                    <article class="card">
+                        <h3>Historické mapování</h3>
+                        <p>Porovnání katastrálních map, vojenských ortofot a současných družicových snímků. Přehledné vrstvy pomáhají sledovat proměnu krajiny.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Dronové snímky</h3>
+                        <p>Plánované mise s dronem umožní vytvořit detailní ortofoto, fotogrammetrické modely a digitální model povrchu pro 3D rekonstrukci.</p>
+                    </article>
+                    <article class="card">
+                        <h3>3D rekonstrukce</h3>
+                        <p>Postupné sestavení digitálního modelu někdejší zástavby vytvoří vizuální most mezi minulostí a současností území.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="mapa">
+            <div class="container">
+                <h2>Interaktivní mapa Holiček</h2>
+                <p class="lead">Mapa kombinuje historické podklady, plánované dronové lety a orientační body. Kliknutím na prvek se zobrazí detail s popisem, odkazem na fotografie nebo audiozáznam.</p>
+                <div class="map-layout">
+                    <div class="map-grid">
+                        <aside class="map-panel" aria-label="Boční panel informací a vrstev">
+                            <div>
+                                <h3>Tematické vrstvy</h3>
+                                <div class="layer-list">
+                                    <div class="layer-item">
+                                        <label>
+                                            <input type="checkbox" data-layer="cuzkOrto">
+                                            <span>Ortofoto (ČÚZK, WMTS)</span>
+                                        </label>
+                                        <small>podklad</small>
+                                    </div>
+                                    <div class="layer-item">
+                                        <label>
+                                            <input type="checkbox" data-layer="historicalFootprint" checked>
+                                            <span>Historické objekty (základy)</span>
+                                        </label>
+                                        <small>polygon</small>
+                                    </div>
+                                    <div class="layer-item">
+                                        <label>
+                                            <input type="checkbox" data-layer="demRelief" checked>
+                                            <span>DEM (zastíněný reliéf)</span>
+                                        </label>
+                                        <small>rastrová</small>
+                                    </div>
+                                    <div class="layer-item">
+                                        <label>
+                                            <input type="checkbox" data-layer="pointsOfInterest" checked>
+                                            <span>Body zájmu</span>
+                                        </label>
+                                        <small>body</small>
+                                    </div>
+                                    <div class="layer-item">
+                                        <label>
+                                            <input type="checkbox" id="mode3d">
+                                            <span>3D mód (náhled)</span>
+                                        </label>
+                                        <small>experimentální</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card" id="feature-detail">
+                                <h3>Detail prvku</h3>
+                                <p>Vyberte objekt v mapě pro popis a média.</p>
+                                <div id="viewer3d" style="display:none; height:200px; border:1px dashed rgba(0,0,0,0.2); border-radius:12px; align-items:center; justify-content:center; text-align:center;">
+                                    <p class="note">3D náhled bude zde (GLB/OBJ/LiDAR).</p>
+                                </div>
+                            </div>
+                            <button type="button" class="button" id="reset-map">Resetovat zobrazení</button>
+                        </aside>
+                        <div>
+                            <div id="map" role="application" aria-label="Mapa zaniklé obce Holičky"></div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="historie">
+            <div class="container">
+                <h2>Historická osa Holiček</h2>
+                <div class="timeline">
+                    <article class="timeline-item" data-period="1842" tabindex="0">
+                        <button class="timeline-toggle" aria-expanded="false" aria-controls="gal-1842">
+                            <h3>18.–19. století (stabilizace osídlení)</h3>
+                            <span class="chevron" aria-hidden="true">▾</span>
+                        </button>
+                        <p>Holičky fungují jako zemědělská obec v zázemí Stráže pod Ralskem. Krajina je mozaikou polí, luk a remízků.</p>
+                        <div id="gal-1842" class="timeline-gallery" hidden>
+                            <figure>
+                                <img src="foto/hospoda_holicky.png" alt="Hospoda v Holičkách – dobový snímek">
+                                <figcaption>Hospoda v Holičkách (dobový snímek)</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="foto/skola_holicky.png" alt="Škola v Holičkách – historická fotografie">
+                                <figcaption>Škola v Holičkách (historická fotografie)</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="foto/cisar_holicky.png" alt="Císařské otisky – výřez mapy Holiček">
+                                <figcaption>Císařské otisky – výřez mapy Holiček</figcaption>
+                            </figure>
+                        </div>
+                    </article>
+
+                    <article class="timeline-item" data-period="1938-1945" tabindex="0">
+                        <button class="timeline-toggle" aria-expanded="false" aria-controls="gal-1938">
+                            <h3>1938–1945 (militarizace a válka)</h3>
+                            <span class="chevron" aria-hidden="true">▾</span>
+                        </button>
+                        <p>Během okupace dochází k militarizaci regionu a budování vojenské infrastruktury. V obci přibývá technických objektů.</p>
+                        <div id="gal-1938" class="timeline-gallery" hidden>
+                            <figure><img src="https://picsum.photos/seed/1938a/400/260" alt="Vojenské značení a plot"><figcaption>Vojenské značení a plot</figcaption></figure>
+                            <figure><img src="https://picsum.photos/seed/1938b/400/260" alt="Mapa s vojenskými objekty"><figcaption>Mapa s vojenskými objekty</figcaption></figure>
+                        </div>
+                    </article>
+
+                    <article class="timeline-item" data-period="1950-1991" tabindex="0">
+                        <button class="timeline-toggle" aria-expanded="false" aria-controls="gal-1950">
+                            <h3>1950–1991 (VVP Ralsko)</h3>
+                            <span class="chevron" aria-hidden="true">▾</span>
+                        </button>
+                        <p>Vznik Vojenského výcvikového prostoru Ralsko. Obyvatelé jsou vystěhováni, zástavba mizí, území se uzavírá veřejnosti.</p>
+                        <div id="gal-1950" class="timeline-gallery" hidden>
+                            <figure><img src="https://picsum.photos/seed/1950a/400/260" alt="Střelnice a cvičiště"><figcaption>Střelnice a cvičiště</figcaption></figure>
+                            <figure><img src="https://picsum.photos/seed/1950b/400/260" alt="Demolice a změny krajiny"><figcaption>Demolice a změny krajiny</figcaption></figure>
+                        </div>
+                    </article>
+
+                    <article class="timeline-item" data-period="1991+" tabindex="0">
+                        <button class="timeline-toggle" aria-expanded="false" aria-controls="gal-1991">
+                            <h3>Po roce 1991 (sukcese a dokumentace)</h3>
+                            <span class="chevron" aria-hidden="true">▾</span>
+                        </button>
+                        <p>Po ukončení vojenské činnosti území zarůstá a probíhá druhotná sukcese. Následuje výzkum – dronové ortofoto, LiDAR a 3D rekonstrukce.</p>
+                        <div id="gal-1991" class="timeline-gallery" hidden>
+                            <figure><img src="https://picsum.photos/seed/1991a/400/260" alt="Současná zeleň a průseky"><figcaption>Současná zeleň a průseky</figcaption></figure>
+                            <figure><img src="https://picsum.photos/seed/1991b/400/260" alt="Dronová dokumentace"><figcaption>Dronová dokumentace</figcaption></figure>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="section" id="oprojektu">
+            <div class="container">
+                <h2>O projektu</h2>
+                <p class="lead">Cílem geoportálu je uchování paměti místa a nabídka srozumitelných dat pro veřejnost.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer id="kontakt">
+        <div class="footer-grid">
+            <div>
+                <strong>Autor projektu</strong>
+                <p>Kontakt: info@zanikla-holicky.cz</p>
+                <p>E-mail: info@zanikla-holicky.cz</p>
+            </div>
+            <div>
+                <strong>Spolupracující instituce</strong>
+                <p>Muzeum Vojenského prostoru Ralsko</p>
+                <p>Regionální archiv</p>
+            </div>
+            <div>
+                <strong>Technické zázemí</strong>
+                <p>Mapová knihovna: Leaflet</p>
+                <p>Zpracování dat: QGIS, Agisoft Metashape</p>
+            </div>
+        </div>
+        <p class="footer-note">Geoportál Holičky &copy; 2025. Stránka bude průběžně aktualizována.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js" defer></script>
+</body>
+</html>
