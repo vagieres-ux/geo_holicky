@@ -79,7 +79,7 @@ nav {
     /* hero s lokální fotografií Ralska */
     background: radial-gradient(circle at 20% 20%, rgba(184, 115, 51, 0.10), transparent 60%),
         linear-gradient(135deg, rgba(74, 106, 74, 0.72), rgba(74, 106, 74, 0.62)),
-        url("ralsko_hero.jpg");
+        url("../images/ralsko_hero.jpg");
     background-size: cover;
     background-position: center;
     color: var(--color-surface);
@@ -488,6 +488,7 @@ body.lb-open { overflow: hidden; }
 
 
 .card p { margin: 0; }
+
 
 
 
