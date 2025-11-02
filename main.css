@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     color-scheme: light;
     /* Paleta pro historický a přírodní charakter Ralska */
     --font-ui: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -79,7 +79,7 @@ nav {
     /* hero s lokální fotografií Ralska */
     background: radial-gradient(circle at 20% 20%, rgba(184, 115, 51, 0.10), transparent 60%),
         linear-gradient(135deg, rgba(74, 106, 74, 0.72), rgba(74, 106, 74, 0.62)),
-        url("ralsko_hero.jpg");
+        url("foto/ralsko_hero.jpg");
     background-size: cover;
     background-position: center;
     color: var(--color-surface);
@@ -488,6 +488,33 @@ body.lb-open { overflow: hidden; }
 
 
 .card p { margin: 0; }
+
+
+
+
+
+
+
+/* Fullscreen ovládání pro mapu */
+.map-fullscreen-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1001;
+    border: none;
+    background: #fff;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.3);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 34px;
+    text-align: center;
+}
+.map-fullscreen-btn:hover { background: #f4f8ff; }
+.map-fullscreen-btn.is-active { background: #e6f4ff; }
+
 
 
 
