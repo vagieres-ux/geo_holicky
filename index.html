@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="cs">
 <head>
     <meta charset="utf-8">
@@ -97,6 +97,13 @@
                                         </label>
                                         <small>experimentální</small>
                                     </div>
+                                    <div class="layer-item">
+                                        <label>
+                                            <input type="checkbox" data-layer="cisarskeOtisky">
+                                            <span>Císařské otisky (dlaždice)</span>
+                                        </label>
+                                        <small>rastrové</small>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card" id="feature-detail">
@@ -109,7 +116,9 @@
                             <button type="button" class="button" id="reset-map">Resetovat zobrazení</button>
                         </aside>
                         <div>
-                            <div id="map" role="application" aria-label="Mapa zaniklé obce Holičky"></div>
+                            <div id="map" role="application" aria-label="Mapa zaniklé obce Holičky">
+                                <button type="button" class="map-fullscreen-btn" aria-label="Celá obrazovka" title="Celá obrazovka">⤢</button>
+                            </div>
                             
                         </div>
                     </div>
@@ -129,16 +138,16 @@
                         <p>Holičky fungují jako zemědělská obec v zázemí Stráže pod Ralskem. Krajina je mozaikou polí, luk a remízků.</p>
                         <div id="gal-1842" class="timeline-gallery" hidden>
                             <figure>
-                                <img src="hospoda_holicky.png" alt="Hospoda v Holičkách – dobový snímek">
+                                <img src="foto/holicky_pohlednice.jpg" alt="Holičky – historická pohlednice">
+                                <figcaption>Holičky – dobový snímek z počátku 20. století</figcaption>
+                            </figure>
+                            <figure>
+                                <img src="foto/hospoda_holicky.png" alt="Hospoda v Holičkách – dobový snímek">
                                 <figcaption>Hospoda v Holičkách (dobový snímek)</figcaption>
                             </figure>
                             <figure>
-                                <img src="skola_holicky.png" alt="Škola v Holičkách – historická fotografie">
+                                <img src="foto/skola_holicky.png" alt="Škola v Holičkách – historická fotografie">
                                 <figcaption>Škola v Holičkách (historická fotografie)</figcaption>
-                            </figure>
-                            <figure>
-                                <img src="cisar_holicky.png" alt="Císařské otisky – výřez mapy Holiček">
-                                <figcaption>Císařské otisky – výřez mapy Holiček</figcaption>
                             </figure>
                         </div>
                     </article>
@@ -206,13 +215,17 @@
             <div>
                 <strong>Technické zázemí</strong>
                 <p>Mapová knihovna: Leaflet</p>
-                <p>Zpracování dat: QGIS, Agisoft Metashape</p>
+                <p>Zpracování dat: ArcGIS, QGIS, RealityCapture, SketchUp,  </p>
             </div>
         </div>
         <p class="footer-note">Geoportál Holičky &copy; 2025. Stránka bude průběžně aktualizována.</p>
     </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- GeoTIFF support for Leaflet (hillshade renderer) -->
+    <script src="https://unpkg.com/geotiff/dist/geotiff.min.js"></script>
+    <script src="https://unpkg.com/leaflet-geotiff/dist/leaflet-geotiff.min.js"></script>
+    <script src="https://unpkg.com/leaflet-geotiff/dist/leaflet-geotiff-hillshade.min.js"></script>
     <script src="app.js" defer></script>
 </body>
 </html>
