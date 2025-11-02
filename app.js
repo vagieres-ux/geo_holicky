@@ -1,7 +1,41 @@
-﻿// Inicializace mapy bez časové osy + lightbox s animovaným přechodem
+// Inicializace mapy bez časové osy + lightbox s animovaným přechodem
 
 document.addEventListener("DOMContentLoaded", function () {
-  const map = L.map("map", { zoomControl: true }).setView([50.6025, 14.8015], 14);
+  const map = L.map("map", { zoomControl: true }).setView([50.6743475, 14.887245], 14);
+
+  // Fullscreen ovládání pro mapu (Leaflet + Fullscreen API)
+  const mapEl = document.getElementById('map');
+  const fsBtn = mapEl ? mapEl.querySelector('.map-fullscreen-btn') : null;
+
+  function enterFs(el) {
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if (el.msRequestFullscreen) el.msRequestFullscreen();
+  }
+  function exitFs() {
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    else if (document.msExitFullscreen) document.msExitFullscreen();
+  }
+  function updateFsState() {
+    const active = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+    if (fsBtn) fsBtn.classList.toggle('is-active', active);
+    setTimeout(() => { try { map.invalidateSize(); } catch (e) {} }, 150);
+  }
+  if (fsBtn && mapEl) {
+    const supported = !!(mapEl.requestFullscreen || mapEl.webkitRequestFullscreen || mapEl.msRequestFullscreen);
+    if (!supported) {
+      fsBtn.style.display = 'none';
+    } else {
+      fsBtn.addEventListener('click', () => {
+        const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+        if (isFs) exitFs(); else enterFs(mapEl);
+      });
+      document.addEventListener('fullscreenchange', updateFsState);
+      document.addEventListener('webkitfullscreenchange', updateFsState);
+      document.addEventListener('msfullscreenchange', updateFsState);
+    }
+  }
 
   const base = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
@@ -38,8 +72,32 @@ document.addEventListener("DOMContentLoaded", function () {
     ]
   };
 
-  const demRelief = L.geoJSON(demReliefData, {
-    style: { color: "#4A6A4A", weight: 1, fillColor: "#4A6A4A", fillOpacity: 0.15 }
+  // Cesta k DEM GeoTIFF (změňte název souboru dle potřeby)
+  const DEM_TIFF_URL = 'foto/dmr5g/dmr5g.tif';
+
+  let demRelief;
+  if (L && L.LeafletGeotiff && L.LeafletGeotiff.Hillshade) {
+    demRelief = new L.LeafletGeotiff(DEM_TIFF_URL, {
+      renderer: new L.LeafletGeotiff.Hillshade({
+        azimuth: 315,
+        altitude: 45,
+        zFactor: 1
+      }),
+      opacity: 0.6
+    });
+  } else {
+    demRelief = L.geoJSON(demReliefData, {
+      style: { color: "#4A6A4A", weight: 1, fillColor: "#4A6A4A", fillOpacity: 0.15 }
+    });
+    console.warn('Leaflet GeoTIFF hillshade plugin not found. Using placeholder DEM polygon.');
+  }
+
+  // Přepis DEM vrstvy na dlaždice z foto/dmr_dlazba
+  demRelief = L.tileLayer('foto/dmr_dlazba/{z}/{x}/{y}.png', {
+    opacity: 1.0,
+    tms: false,
+    detectRetina: true,
+    attribution: 'DEM (zastíněný reliéf)'
   });
 
   const historicalFootprintData = {
@@ -109,7 +167,16 @@ document.addEventListener("DOMContentLoaded", function () {
   };
   const vvpPhase = L.geoJSON(vvpPhaseData, { style: { color: "#B87333", weight: 3, dashArray: "6 4", opacity: 0.85 } });
 
-  const layers = { base, cuzkOrto, historicalFootprint, demRelief, pointsOfInterest, vvpPhase };
+  // Císařské otisky (dlaždice) – lokální XYZ/TMS tiles ve složce `dlazdice`
+  // Pokud jste generovali gdal2tiles bez `-xyz`, nastavte `tms: true`.
+  const cisarskeOtisky = L.tileLayer('foto/dlazdice/{z}/{x}/{y}.png', {
+    opacity: 0.8,
+    tms: false,
+    detectRetina: true,
+    attribution: 'Císařské otisky'
+  });
+
+  const layers = { base, cuzkOrto, cisarskeOtisky, historicalFootprint, demRelief, pointsOfInterest, vvpPhase };
 
   // Výchozí zobrazení
   historicalFootprint.addTo(map);
@@ -139,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Reset mapy
   document.getElementById("reset-map")?.addEventListener("click", () => {
-    map.setView([50.6025, 14.8015], 14);
+    map.setView([50.6743475, 14.887245], 14);
     document.querySelectorAll("input[data-layer]").forEach((el) => {
       const key = el.dataset.layer;
       el.checked = true;
@@ -286,3 +353,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 })();
+
